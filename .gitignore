@@ -5,6 +5,16 @@ dist
 tmp
 out-tsc
 *.tsbuildinfo
+
+# Local environment files and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
 .expo
 .expo-shared
 .next
