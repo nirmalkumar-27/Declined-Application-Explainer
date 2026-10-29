@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Declined Application Explainer"
+description = "An interactive demo that explains synthetic loan decisions in plain language, shows realistic paths to approval, and provides an auditable fairness view."
+version = "1.0.0"
+id = "artifacts/declined-explainer"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23679
+
+[services.development]
+run = "pnpm --filter @workspace/declined-explainer run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/declined-explainer", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/declined-explainer/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23679"
+BASE_PATH = "/"

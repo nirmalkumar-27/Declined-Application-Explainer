@@ -24,6 +24,42 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /declined-explainer/polish-status:
+    get:
+      operationId: getDeclinedExplainerPolishStatus
+      tags: [declined-explainer]
+      summary: Check whether optional letter wording is configured
+      responses:
+        "200":
+          description: Wording configuration status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LetterPolishStatus"
+  /declined-explainer/polish-letter:
+    post:
+      operationId: polishDeclinedApplicationLetter
+      tags: [declined-explainer]
+      summary: Optionally rewrite a precomputed decline letter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LetterPolishInput"
+      responses:
+        "200":
+          description: Reworded letter or deterministic template fallback
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LetterPolishOutput"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +69,44 @@ components:
           type: string
       required:
         - status
+    LetterPolishStatus:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+      required:
+        - enabled
+    LetterPolishInput:
+      type: object
+      properties:
+        draft:
+          type: string
+          maxLength: 8000
+        requiredFacts:
+          type: array
+          items:
+            type: string
+            maxLength: 500
+          maxItems: 12
+      required:
+        - draft
+        - requiredFacts
+    LetterPolishOutput:
+      type: object
+      properties:
+        letter:
+          type: string
+        source:
+          type: string
+          enum: [template, anthropic]
+      required:
+        - letter
+        - source
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
 
